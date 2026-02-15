@@ -89,25 +89,40 @@ export default function GrievanceDetail() {
   const canUpdate = role === "admin" || role === "authority";
 
   async function addUpdate() {
+    // ✅ TS-safe guard (Vercel strict build)
+    if (!user) {
+      alert("You must be logged in to add an update.");
+      return;
+    }
     if (!canUpdate) return;
     if (!comment.trim()) return;
+
+    const uid = user.uid; // stable non-null
 
     setSaving(true);
     try {
       await addDoc(collection(db, "grievances", id, "updates"), {
-        by: user.uid,
+        by: uid,
         comment: comment.trim(),
         newStatus,
         createdAt: serverTimestamp(),
       });
+
       await updateDoc(doc(db, "grievances", id), { status: newStatus });
       setComment("");
+    } catch (e: any) {
+      alert(e?.message || "Failed to add update");
     } finally {
       setSaving(false);
     }
   }
 
   async function assignToAuthorityByEmail() {
+    // ✅ TS-safe guard + role check
+    if (!user) {
+      setAssignMsg("You must be logged in as admin to assign.");
+      return;
+    }
     if (role !== "admin") return;
 
     setAssignMsg("");
@@ -116,6 +131,8 @@ export default function GrievanceDetail() {
       setAssignMsg("Enter an email.");
       return;
     }
+
+    const uid = user.uid; // stable non-null
 
     setAssigning(true);
     try {
@@ -133,7 +150,7 @@ export default function GrievanceDetail() {
 
       // Optional: log assignment in timeline (keeps status unchanged)
       await addDoc(collection(db, "grievances", id, "updates"), {
-        by: user.uid,
+        by: uid,
         comment: `Assigned to: ${email}`,
         newStatus: g.status ?? "submitted",
         createdAt: serverTimestamp(),
@@ -142,7 +159,7 @@ export default function GrievanceDetail() {
       setAssignMsg("Assigned successfully ✅");
       setAssignEmail("");
     } catch (e: any) {
-      setAssignMsg(e.message || "Failed to assign");
+      setAssignMsg(e?.message || "Failed to assign");
     } finally {
       setAssigning(false);
     }
