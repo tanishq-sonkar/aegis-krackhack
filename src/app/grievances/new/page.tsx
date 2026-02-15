@@ -26,14 +26,25 @@ export default function NewGrievance() {
 
   async function submit() {
     setError("");
+
+    const uid = user?.uid; // ✅ TS-safe
+    const email = user?.email || "";
+
+    if (!uid) {
+      setError("You are not logged in. Please login again.");
+      return;
+    }
+
     if (!title.trim() || !description.trim()) {
       setError("Title and description are required.");
       return;
     }
+
     setSubmitting(true);
     try {
       const docRef = await addDoc(collection(db, "grievances"), {
-        createdBy: user.uid,
+        createdBy: uid,
+        createdByEmail: email, // (optional but useful)
         title: title.trim(),
         category,
         description: description.trim(),
@@ -41,9 +52,10 @@ export default function NewGrievance() {
         assignedTo: null,
         createdAt: serverTimestamp(),
       });
+
       router.push(`/grievances/${docRef.id}`);
     } catch (e: any) {
-      setError(e.message || "Failed to submit grievance");
+      setError(e?.message || "Failed to submit grievance");
     } finally {
       setSubmitting(false);
     }
@@ -57,7 +69,11 @@ export default function NewGrievance() {
             <CardTitle>New Grievance</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <Input
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
 
             <div className="space-y-1">
               <div className="text-sm font-medium">Category</div>
