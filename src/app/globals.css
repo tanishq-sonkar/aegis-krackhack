@@ -1,0 +1,212 @@
+@import "tailwindcss";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+/* Light mode (kept sensible) */
+:root {
+  --radius: 0.9rem;
+
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.17 0 0);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.17 0 0);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.17 0 0);
+
+  --primary: oklch(0.25 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.25 0 0);
+
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.52 0 0);
+
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.25 0 0);
+
+  --destructive: oklch(0.62 0.22 27);
+  --border: oklch(0.92 0 0);
+  --input: oklch(0.92 0 0);
+  --ring: oklch(0.70 0 0);
+
+  --chart-1: oklch(0.62 0.20 250);
+  --chart-2: oklch(0.62 0.16 180);
+  --chart-3: oklch(0.62 0.18 70);
+  --chart-4: oklch(0.62 0.20 310);
+  --chart-5: oklch(0.62 0.20 20);
+
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.17 0 0);
+  --sidebar-primary: oklch(0.25 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.25 0 0);
+  --sidebar-border: oklch(0.92 0 0);
+  --sidebar-ring: oklch(0.70 0 0);
+}
+
+/* Dark mode: LIGHTER + cyan primary */
+.dark {
+  /* Lighter navy background (so login isn't too dark) */
+  --background: oklch(0.22 0.03 255);
+  --foreground: oklch(0.98 0.01 250);
+
+  /* Glass cards (lighter than before) */
+  --card: oklch(0.27 0.03 255);
+  --card-foreground: oklch(0.98 0.01 250);
+
+  --popover: oklch(0.27 0.03 255);
+  --popover-foreground: oklch(0.98 0.01 250);
+
+  /* ✅ Punchy cyan like your button image */
+  --primary: oklch(0.83 0.18 220);
+  --primary-foreground: oklch(0.12 0.02 255);
+
+  --secondary: oklch(0.30 0.03 255);
+  --secondary-foreground: oklch(0.98 0.01 250);
+
+  --muted: oklch(0.30 0.03 255);
+  --muted-foreground: oklch(0.78 0.01 250);
+
+  --accent: oklch(0.31 0.04 245);
+  --accent-foreground: oklch(0.98 0.01 250);
+
+  --destructive: oklch(0.70 0.19 22);
+
+  --border: oklch(0.98 0.01 250 / 0.12);
+  --input: oklch(0.98 0.01 250 / 0.16);
+  --ring: oklch(0.83 0.18 220 / 0.55);
+
+  --chart-1: oklch(0.83 0.18 220);
+  --chart-2: oklch(0.74 0.14 175);
+  --chart-3: oklch(0.78 0.14 75);
+  --chart-4: oklch(0.72 0.18 305);
+  --chart-5: oklch(0.72 0.18 20);
+
+  --sidebar: oklch(0.26 0.03 255);
+  --sidebar-foreground: oklch(0.98 0.01 250);
+  --sidebar-primary: oklch(0.83 0.18 220);
+  --sidebar-primary-foreground: oklch(0.12 0.02 255);
+  --sidebar-accent: oklch(0.30 0.03 255);
+  --sidebar-accent-foreground: oklch(0.98 0.01 250);
+  --sidebar-border: oklch(0.98 0.01 250 / 0.12);
+  --sidebar-ring: oklch(0.83 0.18 220 / 0.55);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Lighter, smoother app background (no harsh bottom shift) */
+@layer utilities {
+  .bg-app {
+    background:
+      radial-gradient(900px 600px at 18% 8%, rgba(56, 189, 248, 0.26), transparent 60%),
+      radial-gradient(900px 700px at 85% 0%, rgba(99, 102, 241, 0.22), transparent 58%),
+      radial-gradient(900px 700px at 50% 110%, rgba(34, 211, 238, 0.16), transparent 62%),
+      linear-gradient(180deg, rgba(9, 18, 40, 0.92), rgba(9, 18, 40, 0.96));
+    background-attachment: fixed;
+  }
+
+  /* Slightly brighter glass so content reads better */
+  .glass {
+    background: rgba(255, 255, 255, 0.075);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 18px 55px rgba(0, 0, 0, 0.40),
+      inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(14px);
+  }
+
+  /* Optional: use this on special CTA buttons if you want even more punch */
+  .btn-cyan {
+    background: rgba(56, 189, 248, 0.95);
+    color: rgba(8, 12, 24, 0.95);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    box-shadow: 0 14px 35px rgba(56, 189, 248, 0.20);
+  }
+}
+@layer base {
+  a {
+    color: var(--primary);
+  }
+  ::selection {
+    background: rgba(56, 189, 248, 0.25);
+  }
+}
+
+/* Better focus visibility everywhere */
+@layer utilities {
+  .focus-cyan {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+  }
+}
