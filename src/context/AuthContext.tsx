@@ -5,7 +5,8 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
-type Role = "student" | "authority" | "admin";
+// ✅ Include faculty too
+export type Role = "student" | "authority" | "admin" | "faculty";
 
 type AuthState = {
   user: User | null;
@@ -18,6 +19,15 @@ const AuthContext = createContext<AuthState>({
   role: null,
   loading: true,
 });
+
+// ✅ Small runtime guard so random/invalid role values don't break typing
+function normalizeRole(value: unknown): Role {
+  const r = String(value || "").toLowerCase();
+  if (r === "admin") return "admin";
+  if (r === "authority") return "authority";
+  if (r === "faculty") return "faculty";
+  return "student";
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -34,9 +44,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      const snap = await getDoc(doc(db, "users", u.uid));
-      setRole((snap.data()?.role as Role) ?? "student");
-      setLoading(false);
+      try {
+        const snap = await getDoc(doc(db, "users", u.uid));
+        const roleFromDb = snap.exists() ? snap.data()?.role : null;
+        setRole(normalizeRole(roleFromDb));
+      } catch {
+        // fallback: keep app usable even if Firestore read fails
+        setRole("student");
+      } finally {
+        setLoading(false);
+      }
     });
 
     return () => unsub();
