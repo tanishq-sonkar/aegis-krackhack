@@ -17,7 +17,8 @@ export default function AnnouncementsPage() {
   const [items, setItems] = useState<any[]>([]);
   const [search, setSearch] = useState("");
 
-  const canPost = role === "admin" || role === "authority" || role === "faculty";
+const canPost = ["admin", "authority", "faculty"].includes((role ?? "") as string);
+
 
   useEffect(() => {
     const qy = query(collection(db, "announcements"), orderBy("createdAt", "desc"));
