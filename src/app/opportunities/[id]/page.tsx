@@ -51,7 +51,7 @@ export default function OpportunityDetailPage() {
     return () => unsub();
   }, [id]);
 
-  // show applications to admin/authority/faculty (simple)
+  // show applications to admin/authority/faculty
   useEffect(() => {
     if (!id) return;
     if (!canPost) return;
@@ -112,11 +112,19 @@ export default function OpportunityDetailPage() {
     if (!note.trim()) return;
     if (myApp) return; // prevent double apply
 
+    const uid = user?.uid; // ✅ TS-safe
+    const email = user?.email || "";
+
+    if (!uid) {
+      alert("You are not logged in. Please login again.");
+      return;
+    }
+
     setSaving(true);
     try {
       await addDoc(collection(db, "opportunities", id, "applications"), {
-        studentId: user.uid,
-        studentEmail: user.email || "",
+        studentId: uid,
+        studentEmail: email,
         note: note.trim(),
         status: "applied",
         createdAt: serverTimestamp(),
@@ -124,7 +132,7 @@ export default function OpportunityDetailPage() {
       setNote("");
       alert("Applied successfully ✅");
     } catch (e: any) {
-      alert(e.message || "Apply failed");
+      alert(e?.message || "Apply failed");
     } finally {
       setSaving(false);
     }
@@ -139,10 +147,10 @@ export default function OpportunityDetailPage() {
     try {
       await updateDoc(doc(db, "opportunities", id, "applications", appId), {
         status,
-        updatedAt: serverTimestamp(), // helps UI reflect change clearly
+        updatedAt: serverTimestamp(),
       });
     } catch (e: any) {
-      alert(e.message || "Failed to update status");
+      alert(e?.message || "Failed to update status");
     } finally {
       setUpdatingAppId(null);
     }
