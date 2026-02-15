@@ -44,11 +44,21 @@ export default function UploadResourcePage() {
   async function handleUpload() {
     setMsg("");
 
+    // ✅ TS-safe guard + locals
+    const uid = user?.uid;
+    const email = user?.email || "";
+    if (!uid) {
+      setMsg("You are not logged in. Please login again.");
+      return;
+    }
+
     if (!title.trim() || !courseCode.trim()) {
       setMsg("Title and Course Code are required.");
       return;
     }
-    if (!linkUrl.trim() || !isValidUrl(linkUrl.trim())) {
+
+    const link = linkUrl.trim();
+    if (!link || !isValidUrl(link)) {
       setMsg("Please paste a valid https:// link.");
       return;
     }
@@ -61,16 +71,16 @@ export default function UploadResourcePage() {
         type,
         description: description.trim(),
         isFile: false,
-        linkUrl: linkUrl.trim(),
+        linkUrl: link,
 
-        uploadedBy: user.uid,
-        uploadedByEmail: user.email || "",
+        uploadedBy: uid,
+        uploadedByEmail: email,
         createdAt: serverTimestamp(),
       });
 
       router.push("/resources");
     } catch (e: any) {
-      setMsg(e.code ? `${e.code}: ${e.message}` : e.message || "Upload failed");
+      setMsg(e?.code ? `${e.code}: ${e.message}` : e?.message || "Upload failed");
     } finally {
       setSaving(false);
     }
