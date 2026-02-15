@@ -31,6 +31,15 @@ export default function NewOpportunityPage() {
 
   async function create() {
     setErr("");
+
+    // ✅ TS-safe: capture user values in locals and guard
+    const uid = user?.uid;
+    const email = user?.email || "";
+    if (!uid) {
+      setErr("You are not logged in. Please login again.");
+      return;
+    }
+
     if (!title.trim() || !description.trim()) {
       setErr("Title and description are required.");
       return;
@@ -47,16 +56,16 @@ export default function NewOpportunityPage() {
       const docRef = await addDoc(collection(db, "opportunities"), {
         title: title.trim(),
         description: description.trim(),
-        deadline: deadline ? deadline : null, // keep simple (string). You can upgrade to Timestamp later.
+        deadline: deadline ? deadline : null, // string is fine for now
         tags: tagList,
-        postedBy: user.uid,
-        postedByEmail: user.email || "",
+        postedBy: uid,
+        postedByEmail: email,
         createdAt: serverTimestamp(),
       });
 
       router.push(`/opportunities/${docRef.id}`);
     } catch (e: any) {
-      setErr(e.message || "Failed to create.");
+      setErr(e?.message || "Failed to create.");
     } finally {
       setSaving(false);
     }
