@@ -32,7 +32,7 @@ export default function NewAnnouncementPage() {
   const [tags, setTags] = useState("");
   const [pinned, setPinned] = useState(false);
 
-  // NEW: optional link
+  // optional link
   const [linkUrl, setLinkUrl] = useState("");
 
   const [saving, setSaving] = useState(false);
@@ -44,6 +44,17 @@ export default function NewAnnouncementPage() {
 
   async function create() {
     setErr("");
+
+    // ✅ TS-safe guard (Vercel strict build)
+    if (!user) {
+      setErr("You must be logged in to post.");
+      return;
+    }
+    if (!canPost) {
+      setErr("You don't have permission to post announcements.");
+      return;
+    }
+
     if (!title.trim() || !body.trim()) {
       setErr("Title and content are required.");
       return;
@@ -61,6 +72,9 @@ export default function NewAnnouncementPage() {
       .filter(Boolean)
       .slice(0, 12);
 
+    const uid = user.uid; // ✅ stable non-null
+    const email = user.email ?? "";
+
     setSaving(true);
     try {
       await addDoc(collection(db, "announcements"), {
@@ -68,16 +82,16 @@ export default function NewAnnouncementPage() {
         body: body.trim(),
         tags: tagList,
         pinned,
-        linkUrl: link || null, // NEW
+        linkUrl: link || null,
 
-        postedBy: user.uid,
-        postedByEmail: user.email || "",
+        postedBy: uid,
+        postedByEmail: email,
         createdAt: serverTimestamp(),
       });
 
       router.push("/announcements");
     } catch (e: any) {
-      setErr(e.message || "Failed to post.");
+      setErr(e?.message || "Failed to post.");
     } finally {
       setSaving(false);
     }
@@ -104,7 +118,6 @@ export default function NewAnnouncementPage() {
               onChange={(e) => setBody(e.target.value)}
             />
 
-            {/* NEW: Link */}
             <Input
               placeholder="Optional link (Google Form / PDF / Drive / Website)"
               value={linkUrl}
@@ -128,7 +141,7 @@ export default function NewAnnouncementPage() {
 
             {err && <p className="text-sm text-red-600">{err}</p>}
 
-            <Button onClick={create} disabled={saving}>
+            <Button onClick={create} disabled={saving} className="w-full">
               {saving ? "Posting..." : "Post"}
             </Button>
           </CardContent>
