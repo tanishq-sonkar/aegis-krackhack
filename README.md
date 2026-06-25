@@ -4,7 +4,7 @@ AEGIS Campus Hub is a role-based campus management platform designed to bring es
 
 The platform provides modules for grievance management, academic resources, opportunities, announcements, and role-based access for students, faculty, authorities, and administrators.
 
-Live website: aegis-krackhack.vercel.app
+Live website: https://aegis-krackhack.vercel.app
 
 ---
 
